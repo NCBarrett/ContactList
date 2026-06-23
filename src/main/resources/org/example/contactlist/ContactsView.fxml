@@ -17,7 +17,7 @@
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
 
-    <ListView fx:id="ContactList"/>
+    <ListView fx:id="contactList"/>
     <HBox >
         <ToggleButton fx:id="addToggle" text="Add" onAction="#handleToggle"/>
         <Button fx:id="changeBtn" text="Edit"/>

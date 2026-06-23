@@ -1,12 +1,15 @@
 package org.example.contactlist;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class Contacts {
 
     private int id;
-    private String name;
-    private String phone;
-    private String email;
-    private String address;
+    private StringProperty name;
+    private StringProperty phone;
+    private StringProperty email;
+    private StringProperty address;
 
     public Contacts(int id,
                     String name,
@@ -14,30 +17,30 @@ public class Contacts {
                     String email,
                     String address) {
         this.id = id;
-        this.name = name;
-        this.phone = phone;
-        this.email = email;
-        this.address = address;
+        this.name = new SimpleStringProperty(name);
+        this.phone = new SimpleStringProperty(phone);
+        this.email = new SimpleStringProperty(email);
+        this.address = new SimpleStringProperty(address);
     }
 
-    public int getId() {return id;
-    }
+    public int getId() {return id; }
 
     public void setId(int id) { this.id = id; }
 
-    public String getName() { return name; }
+    public String getName() { return name.get(); }
+    public StringProperty nameProperty() { return name; }
 
-    public void setName(String name) { this.name = name; }
+    public void setName(StringProperty name) { this.name = name; }
 
-    public String getPhone() { return phone; }
+    public String getPhone() { return phone.get(); }
 
-    public void setPhone(String phone) { this.phone = phone; }
+    public void setPhone(StringProperty phone) { this.phone = phone; }
 
-    public String getEmail() { return email; }
+    public String getEmail() { return email.get(); }
 
-    public void setEmail(String email) { this.email = email; }
+    public void setEmail(StringProperty email) { this.email = email; }
 
-    public String getAddress() { return address; }
+    public String getAddress() { return address.get(); }
 
-    public void setAddress(String address) { this.address = address; }
+    public void setAddress(StringProperty address) { this.address = address; }
 }

@@ -6,7 +6,7 @@
   </component>
   <component name="DBNavigator.Project.DataEditorManager">
     <record-view-column-sorting-type value="BY_INDEX" />
-    <value-preview-text-wrapping value="true" />
+    <value-preview-text-wrapping value="false" />
     <value-preview-pinned value="false" />
   </component>
   <component name="DBNavigator.Project.DatabaseAssistantManager">
@@ -14,7 +14,13 @@
       <assistant-state connection-id="virtual-sqlite-connection" assistant-type="SELECT_AI" default-profile-name="" selected-chat-id="" availability="UNAVAILABLE" acknowledgement="NONE" selected="true">
         <tools />
       </assistant-state>
-      <assistant-state connection-id="6ade3eaa-036b-4c86-b301-42c78b456def" assistant-type="PUBLIC" default-profile-name="" selected-chat-id="" availability="AVAILABLE" acknowledgement="NONE" selected="true">
+      <assistant-state connection-id="6ade3eaa-036b-4c86-b301-42c78b456def" assistant-type="PUBLIC" default-profile-name="" selected-chat-id="A1CEC4E363F4409DADB689E526750A0D" availability="AVAILABLE" acknowledgement="ENGAGED" selected="true">
+        <chats>
+          <chat id="A1CEC4E363F4409DADB689E526750A0D" title="" session-signature="" timestamp="1782242364430">
+            <messages />
+            <context provider="" profile="" model="" action="" interactive="true" />
+          </chat>
+        </chats>
         <tools />
       </assistant-state>
       <assistant-state connection-id="6ade3eaa-036b-4c86-b301-42c78b456def" assistant-type="SELECT_AI" default-profile-name="" selected-chat-id="" availability="UNAVAILABLE" acknowledgement="NONE">
@@ -52,7 +58,7 @@
     <retain-sticky-names value="false" />
   </component>
   <component name="DBNavigator.Project.FileConnectionMappingManager">
-    <mapping file-url="file://$PROJECT_DIR$/src/main/java/org/example/contactlist/DatabaseMgr.java" connection-id="virtual-sqlite-connection" session-id="" current-schema="" />
+    <mapping file-url="file://$PROJECT_DIR$/src/main/java/org/example/contactlist/DatabaseMgr.java" connection-id="virtual-sqlite-connection" session-id="MAIN" current-schema="" />
   </component>
   <component name="DBNavigator.Project.MethodExecutionManager">
     <method-browser />
@@ -185,7 +191,7 @@
     </connections>
     <browser-settings>
       <general>
-        <display-mode value="TABBED" />
+        <display-mode value="SIMPLE" />
         <navigation-history-size value="100" />
         <show-object-details value="false" />
         <enable-sticky-paths value="true" />

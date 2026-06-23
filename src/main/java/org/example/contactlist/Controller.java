@@ -2,6 +2,8 @@
 
 package org.example.contactlist;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -26,9 +28,10 @@ public class Controller {
     public Label address;
 
     @FXML
-    public ListView ContactList;
+    public ListView contactList;
 
     @FXML
+//    private ListView<Contacts> contactListView;
     public ListView<String> contactListView;
 
     @FXML
@@ -56,12 +59,6 @@ public class Controller {
     public ToggleButton addToggle;
 
     @FXML
-    private void initialize() {
-        addDetails.setVisible(false);
-        addDetails.setManaged(false);
-    }
-
-    @FXML
     private void handleToggle() {
         boolean isVisible = addDetails.isVisible();
         boolean isManaged = addDetails.isManaged();
@@ -69,15 +66,40 @@ public class Controller {
         addDetails.setManaged(!isManaged);
     }
 
-    private ContactsDao contactsDao = new ContactsDao();
+    private final ContactsDao contactsDao = new ContactsDao();
+    private DatabaseMgr dbMgr;
+    private ObservableList<Contacts> contacts =
+            FXCollections.observableArrayList(contactsDao.getAllContacts());
 
-    private void loadContacts() {
-        List<Contacts> contacts = contactsDao.getAllContacts();
-        contactListView.getItems().clear();
-        for (Contacts contact : contacts) {
-            contactListView.getItems().add(contact.getName() + " - " +
-                    contact.getPhone() + " - " + contact.getEmail() +
-                    " - " + contact.getAddress());
-        }
+    @FXML
+    private void initialize() {
+        addDetails.setVisible(false);
+        addDetails.setManaged(false);
+        System.out.println("Initializing page");
+        loadContacts();
     }
+    private void loadContacts() {
+        System.out.println("Loading contacts");
+//        List<Contacts> contacts = contactsDao.getAllContacts();
+        ObservableList<String> observableContacts =
+                FXCollections.observableArrayList(
+                        contactsDao.getAllContacts().toString());
+
+//        contactListView.setItems(observableContacts);
+//        for (Contacts contact : contacts) {
+//            this.contactListView.getItems().add(contact.getName() + " - " +
+//                    contact.getPhone() + " - " + contact.getAddress() +
+//                    " - " + contact.getEmail());
+//        }
+    }
+
+    @FXML
+    private void handleSubmit() {
+        String name = nameField.getText();
+        String phone = phoneField.getText();
+        String email = emailField.getText();
+        String address = addressField.getText();
+        contactsDao.addContact(name, phone, email, address);
+    }
+
 }
