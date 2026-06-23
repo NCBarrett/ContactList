@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.TextField?>
+<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.contactlist.Controller">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+
+    <ListView fx:id="ContactList"/>
+    <HBox >
+        <ToggleButton fx:id="addToggle" text="Add" onAction="#handleToggle"/>
+        <Button fx:id="changeBtn" text="Edit"/>
+        <Button fx:id="deleteBtn" text="Remove"/>
+    </HBox>
+    <HBox fx:id="addDetails">
+        <VBox>
+            <HBox>
+                <Label fx:id="name" text="Name: "/>
+                <TextField fx:id="nameField"/>
+            </HBox>
+            <HBox>
+                <Label fx:id="phone" text="Ph: "/>
+                <TextField fx:id="phoneField"/>
+            </HBox>
+            <HBox>
+                <Label fx:id="email" text="Email: "/>
+                <TextField fx:id="emailField"/>
+            </HBox>
+            <HBox>
+                <Label fx:id="address" text="Address: "/>
+                <TextField fx:id="addressField"/>
+            </HBox>
+        </VBox>
+        <VBox alignment="CENTER"  >
+            <Button fx:id="submit" text="Submit"/>
+        </VBox>
+    </HBox>
+</VBox>
