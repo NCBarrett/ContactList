@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
+import java.util.List;
+
 public class Controller {
 
     @FXML
@@ -27,7 +29,7 @@ public class Controller {
     public ListView ContactList;
 
     @FXML
-    public ListView<String> contactList;
+    public ListView<String> contactListView;
 
     @FXML
     public TextField emailField;
@@ -54,6 +56,12 @@ public class Controller {
     public ToggleButton addToggle;
 
     @FXML
+    private void initialize() {
+        addDetails.setVisible(false);
+        addDetails.setManaged(false);
+    }
+
+    @FXML
     private void handleToggle() {
         boolean isVisible = addDetails.isVisible();
         boolean isManaged = addDetails.isManaged();
@@ -61,9 +69,15 @@ public class Controller {
         addDetails.setManaged(!isManaged);
     }
 
-    @FXML
-    private void initialize() {
-        addDetails.setVisible(false);
-        addDetails.setManaged(false);
+    private ContactsDao contactsDao = new ContactsDao();
+
+    private void loadContacts() {
+        List<Contacts> contacts = contactsDao.getAllContacts();
+        contactListView.getItems().clear();
+        for (Contacts contact : contacts) {
+            contactListView.getItems().add(contact.getName() + " - " +
+                    contact.getPhone() + " - " + contact.getEmail() +
+                    " - " + contact.getAddress());
+        }
     }
 }
