@@ -43,4 +43,9 @@ public class Contacts {
     public String getAddress() { return address.get(); }
 
     public void setAddress(StringProperty address) { this.address = address; }
+
+    @Override
+    public String toString() {
+        return getName() + " - " + getPhone() + " - " + getEmail() + " - " + getAddress();
+    }
 }

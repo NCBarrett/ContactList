@@ -17,10 +17,10 @@
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
 
-    <ListView fx:id="contactList"/>
+    <ListView fx:id="contactListView"/>
     <HBox >
         <ToggleButton fx:id="addToggle" text="Add" onAction="#handleToggle"/>
-        <Button fx:id="changeBtn" text="Edit"/>
+        <Button fx:id="changeBtn" text="Edit" onAction="#handleChangeBtn"/>
         <Button fx:id="deleteBtn" text="Remove"/>
     </HBox>
     <HBox fx:id="addDetails">
@@ -43,7 +43,7 @@
             </HBox>
         </VBox>
         <VBox alignment="CENTER"  >
-            <Button fx:id="submit" text="Submit"/>
+            <Button fx:id="submit" text="Submit" onAction="#handleSubmit"/>
         </VBox>
     </HBox>
 </VBox>

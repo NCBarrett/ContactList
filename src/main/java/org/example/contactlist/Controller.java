@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Controller {
 
@@ -31,7 +32,7 @@ public class Controller {
     public ListView contactList;
 
     @FXML
-//    private ListView<Contacts> contactListView;
+    //private ListView<Contacts> contactListView;
     public ListView<String> contactListView;
 
     @FXML
@@ -75,7 +76,7 @@ public class Controller {
     private void initialize() {
         addDetails.setVisible(false);
         addDetails.setManaged(false);
-        System.out.println("Initializing page");
+//        System.out.println("Initializing page");
         loadContacts();
     }
     private void loadContacts() {
@@ -84,13 +85,8 @@ public class Controller {
         ObservableList<String> observableContacts =
                 FXCollections.observableArrayList(
                         contactsDao.getAllContacts().toString());
+        this.contactListView.setItems(observableContacts);
 
-//        contactListView.setItems(observableContacts);
-//        for (Contacts contact : contacts) {
-//            this.contactListView.getItems().add(contact.getName() + " - " +
-//                    contact.getPhone() + " - " + contact.getAddress() +
-//                    " - " + contact.getEmail());
-//        }
     }
 
     @FXML
@@ -100,6 +96,35 @@ public class Controller {
         String email = emailField.getText();
         String address = addressField.getText();
         contactsDao.addContact(name, phone, email, address);
+        loadContacts();
+        nameField.clear();
+        phoneField.clear();
+        emailField.clear();
+        addressField.clear();
     }
 
+    @FXML
+    private void handleChangeBtn() {
+        String person = this.contactListView.getSelectionModel().getSelectedItem();
+
+        if (person != null) {
+            Alert alert = new  Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Selection alert");
+            alert.setContentText("Please select a contact");
+            Optional<ButtonType> result = alert.showAndWait();
+        }
+
+        String name = nameField.getText();
+        String phone = phoneField.getText();
+        String email = emailField.getText();
+        String address = addressField.getText();
+        contactsDao.updateContact(name, phone, email, address);
+        loadContacts();
+        nameField.clear();
+        phoneField.clear();
+        emailField.clear();
+        addressField.clear();
+    }
+
+    // Add a function to clear all input fields
 }

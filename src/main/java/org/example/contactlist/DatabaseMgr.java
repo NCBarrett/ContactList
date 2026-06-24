@@ -21,7 +21,7 @@ public class DatabaseMgr {
 
     public static Connection getConnection() throws SQLException {;
 
-        System.out.println("Connecting to database...");
+//        System.out.println("Connecting to database...");
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
@@ -39,7 +39,7 @@ public class DatabaseMgr {
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
-            System.out.println("Database and table successfully verified/created.");
+//            System.out.println("Database and table successfully verified/created.");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
