@@ -20,9 +20,9 @@ public class ContactsDao implements Dao{
                 contactsList.add(new Contacts(
                         rs.getInt("id"),
                         rs.getString("name"),
-                        rs.getString("sPhone"),
-                        rs.getString("sEmail"),
-                        rs.getString("sAddress")
+                        rs.getString("phone"),
+                        rs.getString("email"),
+                        rs.getString("address")
                 ));
             }
 //            System.out.println("Inside ContactsDao, Contacts list loaded successfully");
@@ -54,19 +54,42 @@ public class ContactsDao implements Dao{
         }
     }
 
-    public void updateContact(String name, String phone, String email, String address, int id) {
-        String sql = """
-            UPDATE ContactList SET name = ?, sPhone = ?, sEmail = ?, sAddress = ? WHERE id = ?
-            """;
+    public void updateContact(String name, String phone, String email, String address,
+                              int id) {
+        StringBuilder sql = new StringBuilder("UPDATE ContactList SET ");
+        List<Object> params = new ArrayList<>();
+
+        if (name != null) {
+            sql.append("name=?, ");
+            params.add(name);
+        }
+
+        if (phone != null) {
+            sql.append("phone=?, ");
+            params.add(phone);
+        }
+
+        if (email != null) {
+            sql.append("email=?, ");
+            params.add(email);
+        }
+
+        if (address != null) {
+            sql.append("address=?, ");
+            params.add(address);
+        }
+
+        if (params.isEmpty()) {
+            return;
+        }
+        sql.setLength(sql.length() - 2);
 
         try (Connection conn = DatabaseMgr.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql.toString())) {
 
-            pstmt.setString(1, name);
-            pstmt.setString(2, phone);
-            pstmt.setString(3, email);
-            pstmt.setString(4, address);
-            pstmt.setInt(5, id);
+            for (int i = 0; i < params.size(); i++) {
+                pstmt.setObject(i + 1, params.get(i));
+            }
 
             pstmt.executeUpdate();
             System.out.println("Contact Updated successfully!");

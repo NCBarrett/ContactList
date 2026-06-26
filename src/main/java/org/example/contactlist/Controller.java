@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 
 import java.util.List;
@@ -87,9 +88,13 @@ public class Controller {
     private void loadContacts() {
         System.out.println("Loading contacts");
         contactsList.clear();
-//        List<Contacts> people = contactsDao.getAllContacts();
-        var rawList = contactsDao.getAllContacts();
-        ObservableList<Contacts> observableList = FXCollections.observableArrayList(rawList);
+        List<Contacts> people = contactsDao.getAllContacts();
+//        var rawList = contactsDao.getAllContacts();
+        if (people.isEmpty()) {
+            System.out.println();
+        }
+        ObservableList<Contacts> observableList =
+                FXCollections.observableArrayList(people);
 
         contactsTableView.setEditable(false);
 
@@ -98,7 +103,12 @@ public class Controller {
         TableColumn<Contacts, String> addressCol = new TableColumn<>("Address");
         TableColumn<Contacts, String> emailCol = new TableColumn<>("Email");
 
-        contactsTableView.getColumns().addAll(nameCol, phoneCol, addressCol, emailCol);
+        contactsTableView.getColumns().addAll(nameCol, phoneCol, emailCol, addressCol);
+
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        phoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        emailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
+        addressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
 
         contactsTableView.setItems(observableList);
     }
