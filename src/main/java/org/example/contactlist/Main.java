@@ -14,15 +14,14 @@ public class Main extends Application {
     public void init() throws IOException, SQLException {
         DatabaseMgr.getConnection();
         DatabaseMgr.initDB();
-
-        FXMLLoader loader = new FXMLLoader();
     }
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ContactsView.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(
+                Main.class.getResource("ContactsView.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Contact List App");
+//        stage.setTitle("Contact List App");
         stage.setScene(scene);
         stage.show();
     }

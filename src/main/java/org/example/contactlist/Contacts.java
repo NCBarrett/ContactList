@@ -1,15 +1,14 @@
 package org.example.contactlist;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
 public class Contacts {
 
-    private int id;
-    private StringProperty name;
-    private StringProperty phone;
-    private StringProperty email;
-    private StringProperty address;
+    private final int id;
+    private final SimpleStringProperty sName;
+    private final SimpleStringProperty sPhone;
+    private final SimpleStringProperty sEmail;
+    private final SimpleStringProperty sAddress;
 
     public Contacts(int id,
                     String name,
@@ -17,35 +16,34 @@ public class Contacts {
                     String email,
                     String address) {
         this.id = id;
-        this.name = new SimpleStringProperty(name);
-        this.phone = new SimpleStringProperty(phone);
-        this.email = new SimpleStringProperty(email);
-        this.address = new SimpleStringProperty(address);
+        this.sName = new SimpleStringProperty(name);
+        this.sPhone = new SimpleStringProperty(phone);
+        this.sEmail = new SimpleStringProperty(email);
+        this.sAddress = new SimpleStringProperty(address);
     }
 
     public int getId() {return id; }
 
-    public void setId(int id) { this.id = id; }
+//    public void setId(int id) { this.id = id; }
 
-    public String getName() { return name.get(); }
-    public StringProperty nameProperty() { return name; }
+    public String getName() { return sName.get(); }
 
-    public void setName(StringProperty name) { this.name = name; }
+    public void setName(String name) { sName.set(name); }
 
-    public String getPhone() { return phone.get(); }
+    public String getPhone() { return sPhone.get(); }
 
-    public void setPhone(StringProperty phone) { this.phone = phone; }
+    public void setPhone(String phone) { sPhone.set(phone); }
 
-    public String getEmail() { return email.get(); }
+    public String getsEmail() { return sEmail.get(); }
 
-    public void setEmail(StringProperty email) { this.email = email; }
+    public void setEmail(String email) { sEmail.set(email); }
 
-    public String getAddress() { return address.get(); }
+    public String getsAddress() { return sAddress.get(); }
 
-    public void setAddress(StringProperty address) { this.address = address; }
+    public void setsAddress(String address) { sAddress.set(address); }
 
     @Override
     public String toString() {
-        return getName() + " - " + getPhone() + " - " + getEmail() + " - " + getAddress();
+        return getName() + " - " + getPhone() + " - " + getsEmail() + " - " + getsAddress();
     }
 }

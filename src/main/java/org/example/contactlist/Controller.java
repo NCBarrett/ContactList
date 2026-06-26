@@ -32,8 +32,8 @@ public class Controller {
     public ListView contactList;
 
     @FXML
-    //private ListView<Contacts> contactListView;
-    public ListView<String> contactListView;
+
+    public TableView<Contacts> contactsTableView = new TableView<>();
 
     @FXML
     public TextField emailField;
@@ -59,18 +59,14 @@ public class Controller {
     @FXML
     public ToggleButton addToggle;
 
-    @FXML
-    private void handleToggle() {
-        boolean isVisible = addDetails.isVisible();
-        boolean isManaged = addDetails.isManaged();
-        addDetails.setVisible(!isVisible);
-        addDetails.setManaged(!isManaged);
-    }
-
-    private final ContactsDao contactsDao = new ContactsDao();
+    private ContactsDao contactsDao = new ContactsDao();
     private DatabaseMgr dbMgr;
-    private ObservableList<Contacts> contacts =
-            FXCollections.observableArrayList(contactsDao.getAllContacts());
+    private ObservableList<Contacts> contactsList =
+            FXCollections.observableArrayList();
+
+    public Controller() {
+        this.contactsDao = new ContactsDao();
+    }
 
     @FXML
     private void initialize() {
@@ -79,14 +75,32 @@ public class Controller {
 //        System.out.println("Initializing page");
         loadContacts();
     }
+
+    @FXML
+    private void handleToggle() {
+        boolean isVisible = addDetails.isVisible();
+        boolean isManaged = addDetails.isManaged();
+        addDetails.setVisible(!isVisible);
+        addDetails.setManaged(!isManaged);
+    }
+
     private void loadContacts() {
         System.out.println("Loading contacts");
-//        List<Contacts> contacts = contactsDao.getAllContacts();
-        ObservableList<String> observableContacts =
-                FXCollections.observableArrayList(
-                        contactsDao.getAllContacts().toString());
-        this.contactListView.setItems(observableContacts);
+        contactsList.clear();
+//        List<Contacts> people = contactsDao.getAllContacts();
+        var rawList = contactsDao.getAllContacts();
+        ObservableList<Contacts> observableList = FXCollections.observableArrayList(rawList);
 
+        contactsTableView.setEditable(false);
+
+        TableColumn<Contacts, String> nameCol = new TableColumn<>("Name");
+        TableColumn<Contacts, String> phoneCol = new TableColumn<>("Phone");
+        TableColumn<Contacts, String> addressCol = new TableColumn<>("Address");
+        TableColumn<Contacts, String> emailCol = new TableColumn<>("Email");
+
+        contactsTableView.getColumns().addAll(nameCol, phoneCol, addressCol, emailCol);
+
+        contactsTableView.setItems(observableList);
     }
 
     @FXML
@@ -97,34 +111,86 @@ public class Controller {
         String address = addressField.getText();
         contactsDao.addContact(name, phone, email, address);
         loadContacts();
-        nameField.clear();
-        phoneField.clear();
-        emailField.clear();
-        addressField.clear();
+        clearAll();
     }
 
     @FXML
     private void handleChangeBtn() {
-        String person = this.contactListView.getSelectionModel().getSelectedItem();
+        // need to read what's changed and then send only those entries to the UPDATE
+        // query
 
-        if (person != null) {
+        String name = "";
+        String phone = "";
+        String email = "";
+        String address = "";
+        Contacts person = this.contactsTableView.getSelectionModel().getSelectedItem();
+        if (person == null) {
             Alert alert = new  Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Selection alert");
             alert.setContentText("Please select a contact");
             Optional<ButtonType> result = alert.showAndWait();
-        }
+        } else {
+            int id = person.getId();
 
-        String name = nameField.getText();
-        String phone = phoneField.getText();
-        String email = emailField.getText();
-        String address = addressField.getText();
-        contactsDao.updateContact(name, phone, email, address);
+            if (!nameField.getText().isEmpty()) {
+                name = nameField.getText();
+            }
+
+            if (!phoneField.getText().isEmpty()) {
+                phone = phoneField.getText();
+            }
+            if (!emailField.getText().isEmpty()) {
+                email = emailField.getText();
+            }
+
+            if (!addressField.getText().isEmpty()) {
+                address = addressField.getText();
+            }
+
+            contactsDao.updateContact(name, phone, email, address, id);
+            loadContacts();
+            clearAll();
+        }
+    }
+
+    @FXML
+    private void handleDelBtn() {
+        int id = contactsTableView.getSelectionModel().getSelectedItem().getId();
+        contactsDao.deleteContact(id);
         loadContacts();
+    }
+
+    public ObservableList<Contacts> getContactsList() {
+        return contactsList;
+    }
+
+    private void clearAll() {
         nameField.clear();
         phoneField.clear();
         emailField.clear();
         addressField.clear();
     }
-
-    // Add a function to clear all input fields
 }
+
+//public void setContactsList(ObservableList<Contacts> contactsList) {
+//    this.contactsList = contactsList;
+//}
+
+//        contactsList = FXCollections.observableArrayList();
+
+//        contactListView.getItems().addAll(contactsDao.getAllContacts());
+//        contactListView.setCellFactory(lv -> new ListCell<Contacts>() {
+//            @Override
+//            protected void updateItem(Contacts item, boolean empty) {
+//                super.updateItem(item, empty);
+//                setText(empty ? "" : item.getName());
+//                setText(empty ? "" : item.getPhone());
+//                setText(empty ? "" : item.getsEmail());
+//                setText(empty ? "" : item.getsAddress());
+//            }
+//        });
+
+//        ObservableList<String> observableContacts =
+//                FXCollections.observableArrayList(
+//                        contactsDao.getAllContacts().toString());
+//        this.contactListView.setItems(observableContacts.toString());

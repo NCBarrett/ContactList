@@ -31,9 +31,9 @@ public class DatabaseMgr {
                      CREATE TABLE IF NOT EXISTS main.ContactList (
                      id INTEGER PRIMARY KEY AUTOINCREMENT,
                      name TEXT NOT NULL,
-                     phone TEXT NOT NULL,
-                     email TEXT NOT NULL,
-                     address TEXT NOT NULL
+                     sPhone TEXT NOT NULL,
+                     sEmail TEXT NOT NULL,
+                     sAddress TEXT NOT NULL
                      )""";
 
         try (Connection conn = getConnection();

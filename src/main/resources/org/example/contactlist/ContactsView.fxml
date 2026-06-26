@@ -11,17 +11,18 @@
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TableView?>
 <VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.example.contactlist.Controller">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
 
-    <ListView fx:id="contactListView"/>
+    <TableView fx:id="contactsTableView"/>
     <HBox >
         <ToggleButton fx:id="addToggle" text="Add" onAction="#handleToggle"/>
         <Button fx:id="changeBtn" text="Edit" onAction="#handleChangeBtn"/>
-        <Button fx:id="deleteBtn" text="Remove"/>
+        <Button fx:id="deleteBtn" text="Remove" onAction="#handleDelBtn"/>
     </HBox>
     <HBox fx:id="addDetails">
         <VBox>
@@ -30,15 +31,15 @@
                 <TextField fx:id="nameField"/>
             </HBox>
             <HBox>
-                <Label fx:id="phone" text="Ph: "/>
+                <Label fx:id="sPhone" text="Ph: "/>
                 <TextField fx:id="phoneField"/>
             </HBox>
             <HBox>
-                <Label fx:id="email" text="Email: "/>
+                <Label fx:id="sEmail" text="Email: "/>
                 <TextField fx:id="emailField"/>
             </HBox>
             <HBox>
-                <Label fx:id="address" text="Address: "/>
+                <Label fx:id="sAddress" text="Address: "/>
                 <TextField fx:id="addressField"/>
             </HBox>
         </VBox>
