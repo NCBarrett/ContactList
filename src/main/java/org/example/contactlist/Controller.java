@@ -33,8 +33,8 @@ public class Controller {
     public ListView contactList;
 
     @FXML
-
     public TableView<Contacts> contactsTableView = new TableView<>();
+
 
     @FXML
     public TextField emailField;
@@ -61,9 +61,9 @@ public class Controller {
     public ToggleButton addToggle;
 
     private ContactsDao contactsDao = new ContactsDao();
-    private DatabaseMgr dbMgr;
-    private ObservableList<Contacts> contactsList =
-            FXCollections.observableArrayList();
+    List<Contacts> people = contactsDao.getAllContacts();
+    private final ObservableList<Contacts> contactsList =
+            FXCollections.observableArrayList(people);
 
     public Controller() {
         this.contactsDao = new ContactsDao();
@@ -74,43 +74,32 @@ public class Controller {
         addDetails.setVisible(false);
         addDetails.setManaged(false);
 //        System.out.println("Initializing page");
-        loadContacts();
-    }
-
-    @FXML
-    private void handleToggle() {
-        boolean isVisible = addDetails.isVisible();
-        boolean isManaged = addDetails.isManaged();
-        addDetails.setVisible(!isVisible);
-        addDetails.setManaged(!isManaged);
-    }
-
-    private void loadContacts() {
-        System.out.println("Loading contacts");
-        contactsList.clear();
-        List<Contacts> people = contactsDao.getAllContacts();
-//        var rawList = contactsDao.getAllContacts();
-        if (people.isEmpty()) {
-            System.out.println();
-        }
-        ObservableList<Contacts> observableList =
-                FXCollections.observableArrayList(people);
-
-        contactsTableView.setEditable(false);
 
         TableColumn<Contacts, String> nameCol = new TableColumn<>("Name");
         TableColumn<Contacts, String> phoneCol = new TableColumn<>("Phone");
         TableColumn<Contacts, String> addressCol = new TableColumn<>("Address");
         TableColumn<Contacts, String> emailCol = new TableColumn<>("Email");
 
-        contactsTableView.getColumns().addAll(nameCol, phoneCol, emailCol, addressCol);
+        contactsTableView.getColumns().add(nameCol);
+        contactsTableView.getColumns().add(phoneCol);
+        contactsTableView.getColumns().add(addressCol);
+        contactsTableView.getColumns().add(emailCol);
 
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        phoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
-        emailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
-        addressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
+        nameCol.setCellValueFactory(cellData ->
+                cellData.getValue().sNameProperty());
+        phoneCol.setCellValueFactory(cellData ->
+                cellData.getValue().sPhoneProperty());
+        emailCol.setCellValueFactory(cellData ->
+                cellData.getValue().sEmailProperty());
+        addressCol.setCellValueFactory(cellData ->
+                cellData.getValue().sAddressProperty());
+        contactsTableView.setEditable(false);
+        contactsTableView.setItems(contactsList);
+    }
 
-        contactsTableView.setItems(observableList);
+    @FXML
+    private void handleAddButton() {
+        toggleHBox();
     }
 
     @FXML
@@ -120,7 +109,6 @@ public class Controller {
         String email = emailField.getText();
         String address = addressField.getText();
         contactsDao.addContact(name, phone, email, address);
-        loadContacts();
         clearAll();
     }
 
@@ -129,10 +117,6 @@ public class Controller {
         // need to read what's changed and then send only those entries to the UPDATE
         // query
 
-        String name = "";
-        String phone = "";
-        String email = "";
-        String address = "";
         Contacts person = this.contactsTableView.getSelectionModel().getSelectedItem();
         if (person == null) {
             Alert alert = new  Alert(Alert.AlertType.INFORMATION);
@@ -140,6 +124,12 @@ public class Controller {
             alert.setContentText("Please select a contact");
             Optional<ButtonType> result = alert.showAndWait();
         } else {
+            String name = "";
+            String phone = "";
+            String email = "";
+            String address = "";
+            toggleHBox();
+
             int id = person.getId();
 
             if (!nameField.getText().isEmpty()) {
@@ -158,16 +148,30 @@ public class Controller {
             }
 
             contactsDao.updateContact(name, phone, email, address, id);
-            loadContacts();
             clearAll();
+
+            toggleHBox();
         }
     }
 
     @FXML
     private void handleDelBtn() {
-        int id = contactsTableView.getSelectionModel().getSelectedItem().getId();
-        contactsDao.deleteContact(id);
-        loadContacts();
+        Contacts person = this.contactsTableView.getSelectionModel().getSelectedItem();
+        if (person == null) {
+            Alert alert = new  Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Selection alert");
+            alert.setContentText("Please select a contact");
+            Optional<ButtonType> result = alert.showAndWait();
+        } else {
+            Alert alert = new  Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Selection alert");
+            alert.setContentText("Are you sure you want to delete this contact?");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                int id = contactsTableView.getSelectionModel().getSelectedItem().getId();
+                contactsDao.deleteContact(id);
+            }
+        }
     }
 
     public ObservableList<Contacts> getContactsList() {
@@ -179,6 +183,13 @@ public class Controller {
         phoneField.clear();
         emailField.clear();
         addressField.clear();
+    }
+
+    public void toggleHBox() {
+        boolean isVisible = addDetails.isVisible();
+        boolean isManaged = addDetails.isManaged();
+        addDetails.setVisible(!isVisible);
+        addDetails.setManaged(!isManaged);
     }
 }
 
@@ -204,3 +215,18 @@ public class Controller {
 //                FXCollections.observableArrayList(
 //                        contactsDao.getAllContacts().toString());
 //        this.contactListView.setItems(observableContacts.toString());
+
+//    private void loadContacts() {
+//        System.out.println("Loading contacts");
+//        contactsList.clear();
+//        List<Contacts> people = contactsDao.getAllContacts();
+//        if (people.isEmpty()) {
+//            System.out.println();
+//        }
+////        var rawList = contactsDao.getAllContacts();
+//
+//        ObservableList<Contacts> observableList =
+//                FXCollections.observableArrayList(people);
+//
+//        contactsTableView.setItems(observableList);
+//    }

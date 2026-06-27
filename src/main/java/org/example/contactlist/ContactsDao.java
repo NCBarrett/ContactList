@@ -33,16 +33,16 @@ public class ContactsDao implements Dao{
         return contactsList;
     }
 
-    public void addContact(String name, String sPhone, String sEmail, String sAddress) {
+    public void addContact(String sName, String sPhone, String sEmail, String sAddress) {
         String sql = """
-            insert into ContactList(name, sPhone, sEmail, sAddress)
+            insert into ContactList(name, phone, email, address)
             values (?, ?, ?, ?)
             """;
 
         try (Connection conn = DatabaseMgr.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, name);
+            pstmt.setString(1, sName);
             pstmt.setString(2, sPhone);
             pstmt.setString(3, sEmail);
             pstmt.setString(4, sAddress);
@@ -54,28 +54,38 @@ public class ContactsDao implements Dao{
         }
     }
 
-    public void updateContact(String name, String phone, String email, String address,
+    public void updateContact(String sName, String sPhone, String sEmail, String sAddress,
                               int id) {
+        // Check to see if 1) *any* item is clicked and 2) the item is blank
+
+        String name = "";
+        String phone = "";
+        String email = "";
+        String address = "";
         StringBuilder sql = new StringBuilder("UPDATE ContactList SET ");
         List<Object> params = new ArrayList<>();
 
-        if (name != null) {
-            sql.append("name=?, ");
+        if (sName != null) {
+            sql.append("name = ?, ");
+            name = sName;
             params.add(name);
         }
 
-        if (phone != null) {
-            sql.append("phone=?, ");
+        if (sPhone != null) {
+            sql.append("phone = ?, ");
+            phone = sPhone;
             params.add(phone);
         }
 
-        if (email != null) {
-            sql.append("email=?, ");
+        if (sEmail != null) {
+            sql.append("email = ?, ");
+            email = sEmail;
             params.add(email);
         }
 
-        if (address != null) {
-            sql.append("address=?, ");
+        if (sAddress != null) {
+            sql.append("address = ?, ");
+            address = sAddress;
             params.add(address);
         }
 
@@ -84,10 +94,13 @@ public class ContactsDao implements Dao{
         }
         sql.setLength(sql.length() - 2);
 
+        System.out.println("SQL: " + sql.toString());
+
         try (Connection conn = DatabaseMgr.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql.toString())) {
 
             for (int i = 0; i < params.size(); i++) {
+                System.out.println((i + 1) + ": " + params.get(i));
                 pstmt.setObject(i + 1, params.get(i));
             }
 

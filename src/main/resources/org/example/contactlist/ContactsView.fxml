@@ -20,7 +20,7 @@
 
     <TableView fx:id="contactsTableView"/>
     <HBox >
-        <ToggleButton fx:id="addToggle" text="Add" onAction="#handleToggle"/>
+        <ToggleButton fx:id="addToggle" text="Add" onAction="#handleAddButton"/>
         <Button fx:id="changeBtn" text="Edit" onAction="#handleChangeBtn"/>
         <Button fx:id="deleteBtn" text="Remove" onAction="#handleDelBtn"/>
     </HBox>
