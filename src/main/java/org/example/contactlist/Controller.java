@@ -4,61 +4,41 @@ package org.example.contactlist;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.util.List;
 import java.util.Optional;
 
 public class Controller {
 
-    @FXML
-    public HBox addDetails;
+    @FXML public VBox root;
+    @FXML public TableView<Contacts> contactsTableView = new TableView<>();
+    @FXML public HBox controlBtns;
+    @FXML public HBox addDetails;
 
-    @FXML
-    public Label name;
+    @FXML public Label name;
+    @FXML public Label phone;
+    @FXML public Label email;
+    @FXML public Label address;
 
-    @FXML
-    public Label phone;
+    @FXML public TextField emailField;
+    @FXML public TextField nameField;
+    @FXML public TextField phoneField;
+    @FXML public TextField addressField;
 
-    @FXML
-    public Label email;
+    @FXML public Button submitNew;
+    @FXML public Button deleteBtn;
+    @FXML public Button submitChg;
 
-    @FXML
-    public Label address;
-
-    @FXML
-    public ListView contactList;
-
-    @FXML
-    public TableView<Contacts> contactsTableView = new TableView<>();
-
-
-    @FXML
-    public TextField emailField;
-
-    @FXML
-    public TextField nameField;
-
-    @FXML
-    public TextField phoneField;
-
-    @FXML
-    public TextField addressField;
-
-    @FXML
-    public Button submit;
-
-    @FXML
-    public Button changeBtn;
-
-    @FXML
-    public Button deleteBtn;
-
-    @FXML
-    public ToggleButton addToggle;
+    @FXML public ToggleButton addToggle;
+    @FXML public ToggleButton chgToggle;
 
     private ContactsDao contactsDao = new ContactsDao();
     List<Contacts> people = contactsDao.getAllContacts();
@@ -67,13 +47,16 @@ public class Controller {
 
     public Controller() {
         this.contactsDao = new ContactsDao();
+        Stage stage;
+//        stage = (Stage) root.getScene().getWindow();
+//        stage = (Stage) addDetails.getScene().getWindow();
     }
 
-    @FXML
-    private void initialize() {
+    @FXML private void initialize() {
         addDetails.setVisible(false);
         addDetails.setManaged(false);
 //        System.out.println("Initializing page");
+//        contactsTableView.setMinHeight(Region.USE_PREF_SIZE);
 
         TableColumn<Contacts, String> nameCol = new TableColumn<>("Name");
         TableColumn<Contacts, String> phoneCol = new TableColumn<>("Phone");
@@ -82,8 +65,8 @@ public class Controller {
 
         contactsTableView.getColumns().add(nameCol);
         contactsTableView.getColumns().add(phoneCol);
-        contactsTableView.getColumns().add(addressCol);
         contactsTableView.getColumns().add(emailCol);
+        contactsTableView.getColumns().add(addressCol);
 
         nameCol.setCellValueFactory(cellData ->
                 cellData.getValue().sNameProperty());
@@ -93,17 +76,40 @@ public class Controller {
                 cellData.getValue().sEmailProperty());
         addressCol.setCellValueFactory(cellData ->
                 cellData.getValue().sAddressProperty());
+
+        addressCol.setMinWidth(400);
+        contactsTableView.setPrefHeight(200.0); ;
+
         contactsTableView.setEditable(false);
         contactsTableView.setItems(contactsList);
     }
 
-    @FXML
-    private void handleAddButton() {
-        toggleHBox();
+    @FXML private void addToggle(Event event) {
+        Node sourceNode = (Node) event.getSource();
+        Stage stage = (Stage) sourceNode.getScene().getWindow();
+
+//        toggleHBox();
+        addDetails.setVisible(true);
+        addDetails.setManaged(true);
+        submitChg.setVisible(false);
+        submitNew.setVisible(true);
+//        contactsTableView.setMinHeight(100.0);
+        stage.sizeToScene();
     }
 
-    @FXML
-    private void handleSubmit() {
+    @FXML private void chgToggle(Event event) {
+        Node sourceNode = (Node) event.getSource();
+        Stage stage = (Stage) sourceNode.getScene().getWindow();
+
+        addDetails.setVisible(true);
+        addDetails.setManaged(true);
+        submitChg.setVisible(true);
+        submitNew.setVisible(false);
+//        toggleHBox();
+        stage.sizeToScene();
+    }
+
+    @FXML private void submitNew() {
         String name = nameField.getText();
         String phone = phoneField.getText();
         String email = emailField.getText();
@@ -112,11 +118,9 @@ public class Controller {
         clearAll();
     }
 
-    @FXML
-    private void handleChangeBtn() {
+    @FXML private void submitChg() {
         // need to read what's changed and then send only those entries to the UPDATE
         // query
-
         Contacts person = this.contactsTableView.getSelectionModel().getSelectedItem();
         if (person == null) {
             Alert alert = new  Alert(Alert.AlertType.INFORMATION);
@@ -149,13 +153,10 @@ public class Controller {
 
             contactsDao.updateContact(name, phone, email, address, id);
             clearAll();
-
-            toggleHBox();
         }
     }
 
-    @FXML
-    private void handleDelBtn() {
+    @FXML private void handleDelBtn() {
         Contacts person = this.contactsTableView.getSelectionModel().getSelectedItem();
         if (person == null) {
             Alert alert = new  Alert(Alert.AlertType.INFORMATION);
@@ -174,10 +175,6 @@ public class Controller {
         }
     }
 
-    public ObservableList<Contacts> getContactsList() {
-        return contactsList;
-    }
-
     private void clearAll() {
         nameField.clear();
         phoneField.clear();
@@ -190,8 +187,18 @@ public class Controller {
         boolean isManaged = addDetails.isManaged();
         addDetails.setVisible(!isVisible);
         addDetails.setManaged(!isManaged);
+        submitChg.setVisible(false);
+        submitNew.setVisible(false);
     }
 }
+
+
+//    public ObservableList<Contacts> getContactsList() {
+//        return contactsList;
+//    }
+
+//@FXML
+//    public ListView contactList;
 
 //public void setContactsList(ObservableList<Contacts> contactsList) {
 //    this.contactsList = contactsList;

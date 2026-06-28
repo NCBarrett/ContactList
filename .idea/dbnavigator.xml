@@ -14,9 +14,6 @@
       <assistant-state connection-id="virtual-sqlite-connection" assistant-type="SELECT_AI" default-profile-name="" selected-chat-id="" availability="UNAVAILABLE" acknowledgement="NONE" selected="true">
         <tools />
       </assistant-state>
-      <assistant-state connection-id="6ade3eaa-036b-4c86-b301-42c78b456def" assistant-type="SELECT_AI" default-profile-name="" selected-chat-id="" availability="UNAVAILABLE" acknowledgement="NONE">
-        <tools />
-      </assistant-state>
       <assistant-state connection-id="6ade3eaa-036b-4c86-b301-42c78b456def" assistant-type="PUBLIC" default-profile-name="" selected-chat-id="A1CEC4E363F4409DADB689E526750A0D" availability="AVAILABLE" acknowledgement="ENGAGED" selected="true">
         <chats>
           <chat id="A1CEC4E363F4409DADB689E526750A0D" title="" session-signature="" timestamp="1782242364430">
@@ -24,6 +21,9 @@
             <context provider="" profile="" model="" action="" interactive="true" />
           </chat>
         </chats>
+        <tools />
+      </assistant-state>
+      <assistant-state connection-id="6ade3eaa-036b-4c86-b301-42c78b456def" assistant-type="SELECT_AI" default-profile-name="" selected-chat-id="" availability="UNAVAILABLE" acknowledgement="NONE">
         <tools />
       </assistant-state>
     </assistants>
