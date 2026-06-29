@@ -58,41 +58,35 @@ public class ContactsDao implements Dao{
                               int id) {
         // Check to see if 1) *any* item is clicked and 2) the item is blank
 
-        String name = "";
-        String phone = "";
-        String email = "";
-        String address = "";
         StringBuilder sql = new StringBuilder("UPDATE ContactList SET ");
         List<Object> params = new ArrayList<>();
 
         if (sName != null) {
             sql.append("name = ?, ");
-            name = sName;
-            params.add(name);
+            params.add(sName);
         }
 
         if (sPhone != null) {
             sql.append("phone = ?, ");
-            phone = sPhone;
-            params.add(phone);
+            params.add(sPhone);
         }
 
         if (sEmail != null) {
             sql.append("email = ?, ");
-            email = sEmail;
-            params.add(email);
+            params.add(sEmail);
         }
 
         if (sAddress != null) {
             sql.append("address = ?, ");
-            address = sAddress;
-            params.add(address);
+            params.add(sAddress);
         }
 
         if (params.isEmpty()) {
             return;
         }
         sql.setLength(sql.length() - 2);
+
+        sql.append("WHERE id = ").append(id).append(";");
 
         System.out.println("SQL: " + sql.toString());
 
@@ -126,5 +120,3 @@ public class ContactsDao implements Dao{
         }
     }
 }
-//   public ObservableList<Contacts> getAllContacts() {
-//        ObservableList<Contacts> contactsList = FXCollections.observableArrayList();

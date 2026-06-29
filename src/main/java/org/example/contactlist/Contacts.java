@@ -37,14 +37,15 @@ public class Contacts {
     public StringProperty sEmailProperty() { return sEmail; }
     public StringProperty sAddressProperty() { return sAddress; }
 
-    public void setName(String name) { sName.set(name); }
-    public void setPhone(String phone) { sPhone.set(phone); }
-    public void setEmail(String email) { sEmail.set(email); }
-    public void setsAddress(String address) { sAddress.set(address); }
+//    public void setName(String name) { sName.set(name); }
+//    public void setPhone(String phone) { sPhone.set(phone); }
+//    public void setEmail(String email) { sEmail.set(email); }
+//    public void setsAddress(String address) { sAddress.set(address); }
 
     @Override
     public String toString() {
 
-        return getName() + " - " + getPhone() + " - " + getEmail() + " - " + getAddress();
+        return getName() + " - " + getPhone() + " - " + getEmail() +
+                " - " + getAddress();
     }
 }

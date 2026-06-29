@@ -13,6 +13,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +41,11 @@ public class Controller {
     @FXML public ToggleButton addToggle;
     @FXML public ToggleButton chgToggle;
 
+    @FXML TableColumn<Contacts, String> nameCol = new TableColumn<>("Name");
+    @FXML TableColumn<Contacts, String> phoneCol = new TableColumn<>("Phone");
+    @FXML TableColumn<Contacts, String> addressCol = new TableColumn<>("Address");
+    @FXML TableColumn<Contacts, String> emailCol = new TableColumn<>("Email");
+
     private ContactsDao contactsDao = new ContactsDao();
     List<Contacts> people = contactsDao.getAllContacts();
     private final ObservableList<Contacts> contactsList =
@@ -55,13 +61,6 @@ public class Controller {
     @FXML private void initialize() {
         addDetails.setVisible(false);
         addDetails.setManaged(false);
-//        System.out.println("Initializing page");
-//        contactsTableView.setMinHeight(Region.USE_PREF_SIZE);
-
-        TableColumn<Contacts, String> nameCol = new TableColumn<>("Name");
-        TableColumn<Contacts, String> phoneCol = new TableColumn<>("Phone");
-        TableColumn<Contacts, String> addressCol = new TableColumn<>("Address");
-        TableColumn<Contacts, String> emailCol = new TableColumn<>("Email");
 
         contactsTableView.getColumns().add(nameCol);
         contactsTableView.getColumns().add(phoneCol);
@@ -82,18 +81,51 @@ public class Controller {
 
         contactsTableView.setEditable(false);
         contactsTableView.setItems(contactsList);
+
+        submitNew.setVisible(false);
+        submitChg.setVisible(false);
+
+        contactsTableView.getSelectionModel().selectedItemProperty()
+                .addListener((observable,
+                              oldValue, newValue) -> {
+
+                    System.out.println("submitNew.isVisible() = " +
+                            submitNew.isVisible() + "; submitChg.isVisible() = " +
+                            submitChg.isVisible());
+                    if (submitChg.isVisible()) {
+                        if (newValue != null) {
+                            nameField.setText(newValue.sNameProperty().get());
+                            phoneField.setText(newValue.sPhoneProperty().get());
+                            addressField.setText(newValue.sAddressProperty().get());
+                            emailField.setText(newValue.sEmailProperty().get());
+                        }
+                    }
+                });
     }
 
     @FXML private void addToggle(Event event) {
         Node sourceNode = (Node) event.getSource();
         Stage stage = (Stage) sourceNode.getScene().getWindow();
 
-//        toggleHBox();
-        addDetails.setVisible(true);
-        addDetails.setManaged(true);
-        submitChg.setVisible(false);
-        submitNew.setVisible(true);
-//        contactsTableView.setMinHeight(100.0);
+//        System.out.println("submitNew.isVisible() = " +
+//                submitNew.isVisible() + "; submitChg.isVisible() = " +
+//                submitChg.isVisible());
+        if (addDetails.isVisible()) {
+
+            clearAll();
+            if (submitNew.isVisible()) {
+                addDetails.setVisible(false);
+                addDetails.setManaged(false);
+            } else {
+                submitNew.setVisible(true);
+                submitChg.setVisible(false);
+            }
+        } else {
+            addDetails.setVisible(true);
+            addDetails.setManaged(true);
+            submitChg.setVisible(false);
+            submitNew.setVisible(true);
+        }
         stage.sizeToScene();
     }
 
@@ -101,12 +133,39 @@ public class Controller {
         Node sourceNode = (Node) event.getSource();
         Stage stage = (Stage) sourceNode.getScene().getWindow();
 
-        addDetails.setVisible(true);
-        addDetails.setManaged(true);
-        submitChg.setVisible(true);
-        submitNew.setVisible(false);
+        System.out.println("submitNew.isVisible() = " +
+                submitNew.isVisible() + "; submitChg.isVisible() = " +
+                submitChg.isVisible());
+
+        if (addDetails.isVisible()) {
+            if (submitChg.isVisible()) {
+                clearAll();
+                addDetails.setVisible(false);
+                addDetails.setManaged(false);
+            } else {
+                submitChg.setVisible(true);
+                submitNew.setVisible(false);
+            }
+        } else {
+            addDetails.setVisible(true);
+            addDetails.setManaged(true);
+            submitChg.setVisible(true);
+            submitNew.setVisible(false);
 //        toggleHBox();
+        }
+
         stage.sizeToScene();
+
+        if (contactsTableView.getSelectionModel().getSelectedItem() != null) {
+            nameField.setText(contactsTableView.getSelectionModel().getSelectedItem()
+                    .sNameProperty().get());
+            phoneField.setText(contactsTableView.getSelectionModel().getSelectedItem()
+                    .sPhoneProperty().get());
+            emailField.setText(contactsTableView.getSelectionModel().getSelectedItem()
+                    .sEmailProperty().get());
+            addressField.setText(contactsTableView.getSelectionModel().getSelectedItem()
+                    .sAddressProperty().get());
+        }
     }
 
     @FXML private void submitNew() {
@@ -116,6 +175,11 @@ public class Controller {
         String address = addressField.getText();
         contactsDao.addContact(name, phone, email, address);
         clearAll();
+        List<Contacts> people = contactsDao.getAllContacts(); // does this cause a memory leak?
+        ObservableList<Contacts> contactsList =
+                FXCollections.observableArrayList(people);
+        contactsTableView.setItems(contactsList);
+        contactsTableView.getSelectionModel().clearSelection();
     }
 
     @FXML private void submitChg() {
@@ -151,8 +215,15 @@ public class Controller {
                 address = addressField.getText();
             }
 
+//            System.out.println("id = " + id + "; name = " + name + "; phone = " + phone +
+//                    "; email = " + email + "; address = " + address);
             contactsDao.updateContact(name, phone, email, address, id);
             clearAll();
+            List<Contacts> people = contactsDao.getAllContacts(); // does this cause a memory leak?
+            ObservableList<Contacts> contactsList =
+                    FXCollections.observableArrayList(people);
+            contactsTableView.setItems(contactsList);
+            contactsTableView.getSelectionModel().clearSelection();
         }
     }
 
@@ -165,7 +236,7 @@ public class Controller {
             Optional<ButtonType> result = alert.showAndWait();
         } else {
             Alert alert = new  Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Selection alert");
+            alert.setTitle("Delete Confirmation");
             alert.setContentText("Are you sure you want to delete this contact?");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -191,49 +262,3 @@ public class Controller {
         submitNew.setVisible(false);
     }
 }
-
-
-//    public ObservableList<Contacts> getContactsList() {
-//        return contactsList;
-//    }
-
-//@FXML
-//    public ListView contactList;
-
-//public void setContactsList(ObservableList<Contacts> contactsList) {
-//    this.contactsList = contactsList;
-//}
-
-//        contactsList = FXCollections.observableArrayList();
-
-//        contactListView.getItems().addAll(contactsDao.getAllContacts());
-//        contactListView.setCellFactory(lv -> new ListCell<Contacts>() {
-//            @Override
-//            protected void updateItem(Contacts item, boolean empty) {
-//                super.updateItem(item, empty);
-//                setText(empty ? "" : item.getName());
-//                setText(empty ? "" : item.getPhone());
-//                setText(empty ? "" : item.getsEmail());
-//                setText(empty ? "" : item.getsAddress());
-//            }
-//        });
-
-//        ObservableList<String> observableContacts =
-//                FXCollections.observableArrayList(
-//                        contactsDao.getAllContacts().toString());
-//        this.contactListView.setItems(observableContacts.toString());
-
-//    private void loadContacts() {
-//        System.out.println("Loading contacts");
-//        contactsList.clear();
-//        List<Contacts> people = contactsDao.getAllContacts();
-//        if (people.isEmpty()) {
-//            System.out.println();
-//        }
-////        var rawList = contactsDao.getAllContacts();
-//
-//        ObservableList<Contacts> observableList =
-//                FXCollections.observableArrayList(people);
-//
-//        contactsTableView.setItems(observableList);
-//    }
