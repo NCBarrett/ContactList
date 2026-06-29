@@ -13,17 +13,26 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.ToggleGroup?>
 <VBox fx:id="root" alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.example.contactlist.Controller">
     <padding>
         <Insets bottom="20.0" top="20.0" left="10.0" right="10.0" />
     </padding>
 
-        <TableView fx:id="contactsTableView" />
+    <TableView fx:id="contactsTableView" />
 
     <HBox fx:id="controlBtns">
-        <ToggleButton fx:id="addToggle" text="Add" onAction="#addToggle"/>
-        <ToggleButton fx:id="chgToggle" text="Edit" onAction="#chgToggle"/>
+        <fx:define>
+            <ToggleGroup fx:id="addChgToggles"/>
+        </fx:define>
+        <children>
+            <ToggleButton fx:id="addToggle" text="Add" onAction="#addToggle"
+                          toggleGroup="$addChgToggles"/>
+            <ToggleButton fx:id="chgToggle" text="Edit" onAction="#chgToggle"
+                          toggleGroup="$addChgToggles"/>
+        </children>
+
         <Button fx:id="deleteBtn" text="Remove" onAction="#handleDelBtn"/>
     </HBox>
     <HBox fx:id="addDetails" visible="false" managed="false" VBox.vgrow="NEVER">

@@ -38,6 +38,8 @@ public class Controller {
     @FXML public Button deleteBtn;
     @FXML public Button submitChg;
 
+    @FXML private ToggleGroup addChgToggles;
+
     @FXML public ToggleButton addToggle;
     @FXML public ToggleButton chgToggle;
 
@@ -151,7 +153,6 @@ public class Controller {
             addDetails.setManaged(true);
             submitChg.setVisible(true);
             submitNew.setVisible(false);
-//        toggleHBox();
         }
 
         stage.sizeToScene();
@@ -235,11 +236,13 @@ public class Controller {
             alert.setContentText("Please select a contact");
             Optional<ButtonType> result = alert.showAndWait();
         } else {
-            Alert alert = new  Alert(Alert.AlertType.INFORMATION);
+            Alert alert = new  Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Delete Confirmation");
             alert.setContentText("Are you sure you want to delete this contact?");
+            alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
+
+            if (result.isPresent() && result.get() == ButtonType.YES) {
                 int id = contactsTableView.getSelectionModel().getSelectedItem().getId();
                 contactsDao.deleteContact(id);
             }
